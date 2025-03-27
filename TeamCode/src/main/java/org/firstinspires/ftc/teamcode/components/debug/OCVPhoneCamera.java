@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.components.debug;
 
+import static org.opencv.core.CvType.CV_8UC1;
+
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-//import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -20,8 +21,6 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
-
-import static org.opencv.core.CvType.CV_8UC1;
 
 //@Config
 class OCVPhoneCameraConfig {
@@ -72,9 +71,18 @@ public class OCVPhoneCamera extends Component {
         telemetry.addData("FPS", String.format("%.2f", phone_camera.getFps()));
 
         if (get_pattern() != 0) {
-            telemetry.addData("L SAT", (int)capstone_pipeline.means[0].val[0]+" "+(int)capstone_pipeline.means[0].val[1]+" "+(int)capstone_pipeline.means[0].val[2]+" "+(int)capstone_pipeline.means[0].val[3]);
-            telemetry.addData("M SAT", (int)capstone_pipeline.means[1].val[0]+" "+(int)capstone_pipeline.means[1].val[1]+" "+(int)capstone_pipeline.means[1].val[2]+" "+(int)capstone_pipeline.means[1].val[3]);
-            telemetry.addData("R SAT", (int)capstone_pipeline.means[2].val[0]+" "+(int)capstone_pipeline.means[2].val[1]+" "+(int)capstone_pipeline.means[2].val[2]+" "+(int)capstone_pipeline.means[2].val[3]);
+            telemetry.addData("L SAT", (int)capstone_pipeline.means[0].val[0]+" "
+                    +(int)capstone_pipeline.means[0].val[1]+" "
+                    +(int)capstone_pipeline.means[0].val[2]+" "
+                    +(int)capstone_pipeline.means[0].val[3]);
+            telemetry.addData("M SAT", (int)capstone_pipeline.means[1].val[0]+" "
+                    +(int)capstone_pipeline.means[1].val[1]+" "
+                    +(int)capstone_pipeline.means[1].val[2]+" "
+                    +(int)capstone_pipeline.means[1].val[3]);
+            telemetry.addData("R SAT", (int)capstone_pipeline.means[2].val[0]+" "
+                    +(int)capstone_pipeline.means[2].val[1]+" "
+                    +(int)capstone_pipeline.means[2].val[2]+" "
+                    +(int)capstone_pipeline.means[2].val[3]);
         }
 
         telemetry.addData("PATTERN", capstone_pipeline.pattern);
