@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.live.autonomous;
 
 import org.firstinspires.ftc.teamcode.constants.AutoConst;
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
+import org.firstinspires.ftc.teamcode.constants.LEDConst;
 import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.robots.LiveRobot;
@@ -27,6 +28,8 @@ public class AutoSample {
         robot.intake.auto_run = false;
         robot.arm.transfer_position();
         robot.arm.close_claw();
+
+        robot.led_control.alliance = LEDConst.DEFAULT;
     }
 
     public void sampleStop() {
