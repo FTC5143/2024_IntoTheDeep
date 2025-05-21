@@ -8,11 +8,10 @@ import org.firstinspires.ftc.teamcode.components.live.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.live.Intake;
 import org.firstinspires.ftc.teamcode.components.live.LEDControl;
 import org.firstinspires.ftc.teamcode.components.live.Lift;
-import org.firstinspires.ftc.teamcode.components.live.OCVWebCamera;
 import org.firstinspires.ftc.teamcode.components.live.Reach;
 
 public class LiveRobot extends Robot {
-    public OCVWebCamera     web_camera;
+//    public OCVWebCamera     web_camera;
 
     public DriveTrain       drive_train;
     public Lift             lift;
@@ -30,7 +29,7 @@ public class LiveRobot extends Robot {
 
     public LiveRobot(LinearOpMode opmode) {
         super(opmode);
-        web_camera      = new OCVWebCamera(this);
+ //       web_camera      = new OCVWebCamera(this);
 
         drive_train     = new DriveTrain(this);
         lift            = new Lift(this);
