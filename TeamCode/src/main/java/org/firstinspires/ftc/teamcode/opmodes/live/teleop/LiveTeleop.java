@@ -16,12 +16,13 @@ public class LiveTeleop extends LiveTeleopBase {
     boolean back1_pressed = false;
     boolean a1_pressed = false;
     boolean b1_pressed = false;
+    boolean y1_pressed = false;
+    boolean x1_pressed = false;
 
     boolean y2_pressed = false;
     boolean dpad_up2_pressed = false;
     boolean dpad_down2_pressed = false;
     boolean lbump2_pressed = false;
-
 
 
     boolean intake = false;
@@ -57,13 +58,22 @@ public class LiveTeleop extends LiveTeleopBase {
         }
 
         // Reach
-        if(gamepad2.dpad_right) {
+        if (gamepad2.dpad_right) {
             robot.reach.max_reach();
             run_in(() -> { robot.intake.intake_pitch(IntakeConst.INTAKE); }, 500);
         }
         else if (gamepad2.dpad_left){
             robot.reach.min_reach();
             robot.intake.intake_pitch(IntakeConst.TRANS);
+        }
+
+        // Sweeper
+        if (gamepad1.a && !a1_pressed) {
+            robot.intake.sweeper_kick();
+            run_in(() -> { robot.intake.sweeper_rest();} , 400);
+            a1_pressed = true;
+        } else {
+            a1_pressed = false;
         }
 
         // Claw Open
@@ -203,15 +213,15 @@ public class LiveTeleop extends LiveTeleopBase {
         double x = gamepad1.left_stick_x;
         double y = gamepad1.left_stick_y;
         double a = gamepad1.right_stick_x;
-        if (gamepad1.a) {
-            if (!a1_pressed) {
+        if (gamepad1.x) {
+            if (!x1_pressed) {
                 drive_a = (double) robot.drive_train.lcs.a;
                 a1_pressed = true;
             }
             robot.drive_train.odo_slide(x * 10, y * 10, drive_a, speed_mod);
 
-        } else if (gamepad1.b) {
-            if (!b1_pressed) {
+        } else if (gamepad1.y) {
+            if (!y1_pressed) {
                 drive_a = MathUtil.round_quarter(robot.drive_train.lcs.a);
             }
             robot.drive_train.odo_slide(x * 10, y * 10, drive_a, speed_mod);

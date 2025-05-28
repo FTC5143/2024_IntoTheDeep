@@ -32,6 +32,10 @@ class IntakeConfig {
     public static double PITCH_L_INTAKE_POSITION = 0.57;
     public static double PITCH_R_INTAKE_POSITION = 0.57;
 
+    // Sweeper Servo Positions for back and forth movement
+    public static double SWEEPER_REST = 0;
+    public static double SWEEPER_KICK = 1;
+
     public static double PITCH_INTAKE_TWEAK = 0.03;
 
     public static int COLOR_UPDATE_RATE = 5; // Color Sensor update interval
@@ -57,7 +61,12 @@ public class Intake extends Component {
     //// SERVOS ////
     private ServoQUS pitch_l;
     private ServoQUS pitch_r;
+
+    private boolean kick = false;
+
     private CRServoQUS intake;
+
+    private ServoQUS sweeper;
 
     //// SENSORS ////
     private RevColorSensorV3 color_sensor;
@@ -74,12 +83,16 @@ public class Intake extends Component {
         super.registerHardware(hwmap);
 
         //// SERVOS ////
-        pitch_l = new ServoQUS(hwmap.get(Servo.class, "pitchL"), false); // CHECK THIS
+        pitch_l = new ServoQUS(hwmap.get(Servo.class, "pitchL")); // CHECK THIS
+        pitch_l.servo.setDirection(Servo.Direction.FORWARD);
         pitch_r = new ServoQUS(hwmap.get(Servo.class, "pitchR"));
         pitch_r.servo.setDirection(Servo.Direction.REVERSE);
 
         intake = new CRServoQUS(hwmap.get(CRServo.class, "intake"));
         intake.servo.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        sweeper = new ServoQUS(hwmap.get(Servo.class, "sweeper"));
+        sweeper.servo.setDirection(Servo.Direction.FORWARD);
 
         //// SENSORS ////
         color_sensor = hwmap.get(RevColorSensorV3.class, "intakeColor");
@@ -119,6 +132,8 @@ public class Intake extends Component {
         intake_pitch(IntakeConst.TRANS);
         intake_run(0);
 
+        sweeper_rest();
+
         update();
     }
 
@@ -133,6 +148,7 @@ public class Intake extends Component {
         super.updateTelemetry(telemetry);
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
         telemetry.addData("INTAKE ANGLE", intake_angle());
+        telemetry.addData("SWEEPER KICK", kick);
         telemetry.addData("COLOR", current_color);
     }
 
@@ -140,6 +156,7 @@ public class Intake extends Component {
         pitch_l.update();
         pitch_r.update();
         intake.update();
+        sweeper.update();
     }
 
     public void intake_run(double speed) {
@@ -250,6 +267,16 @@ public class Intake extends Component {
     public void intake_pitch(double pitch_l, double pitch_r) {
         this.pitch_l.queue_position(pitch_l);
         this.pitch_r.queue_position(pitch_r);
+    }
+
+    public void sweeper_kick() {
+        this.sweeper.queue_position(IntakeConfig.SWEEPER_KICK);
+        this.kick = true;
+    }
+
+    public void sweeper_rest() {
+        this.sweeper.queue_position(IntakeConfig.SWEEPER_REST);
+        this.kick = false;
     }
 
     private String intake_angle() {
