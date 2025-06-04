@@ -48,6 +48,7 @@ public class LiveTeleop extends LiveTeleopBase {
     @Override
     public void on_loop() {
 
+        // Alliance toggle for LED lights and intake color selection
         if(gamepad1.back && !back1_pressed) {
             robot.intake.toggle_wanted_color();
             robot.led_control.toggle_alliance_color();
@@ -70,10 +71,11 @@ public class LiveTeleop extends LiveTeleopBase {
         // Sweeper
         if (gamepad1.a && !a1_pressed) {
             robot.intake.sweeper_kick();
-            run_in(() -> { robot.intake.sweeper_rest();} , 400);
             a1_pressed = true;
-        } else {
-            a1_pressed = false;
+
+            run_in(() -> { robot.intake.sweeper_rest();} , 400);
+
+            run_in(() -> { a1_pressed = false;} , 400);
         }
 
         // Claw Open

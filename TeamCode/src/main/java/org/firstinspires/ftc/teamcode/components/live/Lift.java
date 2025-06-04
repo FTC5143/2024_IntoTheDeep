@@ -27,6 +27,8 @@ class LiftConfig {
 
     public static int THRESHOLD = 200;
 
+    public static int LINEAR_MAX_SPEED = 16000;
+
     public static int TWEAK_MAX_ADD = 8000;
 
     public static int[] LIFT_LEVELS = {
@@ -206,21 +208,6 @@ public class Lift extends Component {
     }
 
     /**
-     * Returns speed if current position of lift is outside of the threshold
-     * Returns 0 if current position of lift is inside of the threshold
-     * @param speed new motor power
-     * @return speed if current position is outside of the threshold
-     */
-    public double hold_threshold(double speed){
-        if (Math.abs(lift_target - lift_f.getCurrentPosition()) <= LiftConfig.THRESHOLD) {
-            at_thresh = true;
-            return 0;
-        }
-        at_thresh = false;
-        return speed;
-    }
-
-    /**
      * Sets the target position of PID to pos
      * @param pos new target position in cycles
      */
@@ -247,6 +234,7 @@ public class Lift extends Component {
 
     public void zero_lift() {
         level = LiftConst.RE_ZERO;
+        elevate_to(level);
     }
 
     /**
@@ -254,6 +242,29 @@ public class Lift extends Component {
      */
     public void max_lift() {
         elevate_to(LiftConfig.MAX_LEVEL);
+    }
+
+    /**
+     * Returns speed if current position of lift is outside of the threshold
+     * Returns 0 if current position of lift is inside of the threshold
+     * @param speed new motor power
+     * @return speed if current position is outside of the threshold
+     */
+    public double hold_threshold(double speed){
+        if (Math.abs(lift_target - lift_f.getCurrentPosition()) <= LiftConfig.THRESHOLD) {
+            at_thresh = true;
+            return 0;
+        }
+        at_thresh = false;
+        return speed;
+    }
+
+    /**
+     * sets PID target to target_position +
+     * @param speed analog input * max speed constant
+     */
+    public void linear(double speed) {
+        set_target_position(lift_f.getCurrentPosition() + (int) (LiftConfig.LINEAR_MAX_SPEED * speed));
     }
 
     /**
