@@ -169,13 +169,13 @@ public class Intake extends Component {
                 if (spitting_since == -1) {
                     spitting_since = System.nanoTime();
                 } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
-                    intake.queue_power(-1);
+                    intake(-1);
                 }
             } else {
                 if ((current_color == intake_color_wanted) || (current_color == IntakeConst.SAMPLE_YELLOW)) {
                     intake_pitch(IntakeConst.TRANS);
                 }
-                intake.queue_power(speed);
+                intake(speed);
                 spitting_since = -1;
             }
         } else {
@@ -213,19 +213,19 @@ public class Intake extends Component {
                                 LEDConst.BLUE : LEDConst.RED, 2, 200);
                     }
                 }
-                intake.queue_power(speed);
+                intake(speed);
                 spitting_since = -1;
             } else {
                 if (spitting_since == -1) {
                     spitting_since = System.nanoTime();
                 }
                 if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
-                    intake.queue_power(-1);
+                    intake(-1);
                     if (intake_angle == IntakeConst.INTAKE) cued_pitch = IntakeConst.THROW;
                 }
             }
         } else {
-            intake.queue_power(speed);
+            intake(speed);
             if (intake_angle == IntakeConst.INTAKE) {
                 cued_pitch = IntakeConst.THROW;
             }
@@ -267,6 +267,10 @@ public class Intake extends Component {
     public void intake_pitch(double pitch_l, double pitch_r) {
         this.pitch_l.queue_position(pitch_l);
         this.pitch_r.queue_position(pitch_r);
+    }
+
+    public void intake(double speed) {
+        this.intake.queue_power(speed);
     }
 
     public void sweeper_kick() {

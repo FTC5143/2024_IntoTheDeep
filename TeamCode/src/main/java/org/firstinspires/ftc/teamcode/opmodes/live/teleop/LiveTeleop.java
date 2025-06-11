@@ -18,6 +18,7 @@ public class LiveTeleop extends LiveTeleopBase {
     boolean b1_pressed = false;
     boolean y1_pressed = false;
     boolean x1_pressed = false;
+    boolean ps1_pressed = false;
 
     boolean y2_pressed = false;
     boolean dpad_up2_pressed = false;
@@ -27,6 +28,7 @@ public class LiveTeleop extends LiveTeleopBase {
 
     boolean intake = false;
     boolean SKIP = false;
+    boolean color_sensor_override = false;
 
     int prepared_level = 1;
     double drive_a;
@@ -109,11 +111,19 @@ public class LiveTeleop extends LiveTeleopBase {
             }
         }
         // Runs intake spinners
-        if (!gamepad2.start) {
+        if (gamepad1.ps && !ps1_pressed) {
+            color_sensor_override = !color_sensor_override;
+            ps1_pressed = true;
+        } else {
+            ps1_pressed = false;
+        }
+        if (!gamepad2.start && !color_sensor_override) {
             robot.intake.intake_run(gamepad2.a ? 1 : (gamepad2.b ? -1 : 0), gamepad1, gamepad2, robot);
+        } else {
+            robot.intake.intake(gamepad2.a ? 1 : (gamepad2.b ? -1 : 0));
         }
         // Slide retraction
-        if(gamepad2.back || gamepad2.x || gamepad2.a) {
+        if(gamepad2.back || gamepad2.x) {
             if(gamepad2.y){
                 robot.lift.zero_lift();
                 y2_pressed = true;
@@ -202,6 +212,11 @@ public class LiveTeleop extends LiveTeleopBase {
             dpad_down2_pressed = true;
         } else if (!gamepad2.dpad_down) {
             dpad_down2_pressed = false;
+        }
+
+        // Linear Lift Controller
+        if (gamepad2.left_stick_y != 0) {
+            robot.lift.linear(-gamepad2.left_stick_y);
         }
 
         /// Driver 1 ///

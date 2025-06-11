@@ -234,7 +234,6 @@ public class Lift extends Component {
 
     public void zero_lift() {
         level = LiftConst.RE_ZERO;
-        elevate_to(level);
     }
 
     /**
