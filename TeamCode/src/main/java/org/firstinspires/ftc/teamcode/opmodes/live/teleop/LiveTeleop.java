@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
 import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.opmodes.live.LiveTeleopBase;
-import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 @TeleOp(name="Teleop Live", group="driver control")
 //@Disabled
@@ -70,16 +69,6 @@ public class LiveTeleop extends LiveTeleopBase {
             robot.intake.intake_pitch(IntakeConst.TRANS);
         }
 
-        // Sweeper
-        if (gamepad1.a && !a1_pressed) {
-            robot.intake.sweeper_kick();
-            a1_pressed = true;
-
-            run_in(() -> { robot.intake.sweeper_rest();} , 400);
-
-            run_in(() -> { a1_pressed = false;} , 400);
-        }
-
         // Claw Open
         if (gamepad2.left_bumper && !lbump2_pressed) {
             if (robot.lift.level == LiftConst.SPECIMEN || robot.lift.level == LiftConst.HIGH_BAR) {
@@ -96,6 +85,17 @@ public class LiveTeleop extends LiveTeleopBase {
             lbump2_pressed = false;
         }
 
+
+        // Linear Lift Controller
+        if (gamepad2.left_stick_y != 0) {
+            robot.lift.linear(-gamepad2.left_stick_y);
+        }
+
+        // Linear Reach Controller
+        if (gamepad2.left_stick_x != 0) {
+            robot.reach.linear(gamepad2.left_stick_x);
+        }
+
         if(robot.lift.level != LiftConst.INIT) {
             // Lift tweak
             robot.lift.tweak(gamepad2.right_trigger - gamepad2.left_trigger);
@@ -110,6 +110,7 @@ public class LiveTeleop extends LiveTeleopBase {
                 intake = true;
             }
         }
+
         // Runs intake spinners
         if (gamepad1.ps && !ps1_pressed) {
             color_sensor_override = !color_sensor_override;
@@ -122,6 +123,7 @@ public class LiveTeleop extends LiveTeleopBase {
         } else {
             robot.intake.intake(gamepad2.a ? 1 : (gamepad2.b ? -1 : 0));
         }
+
         // Slide retraction
         if(gamepad2.back || gamepad2.x) {
             if(gamepad2.y){
@@ -214,11 +216,6 @@ public class LiveTeleop extends LiveTeleopBase {
             dpad_down2_pressed = false;
         }
 
-        // Linear Lift Controller
-        if (gamepad2.left_stick_y != 0) {
-            robot.lift.linear(-gamepad2.left_stick_y);
-        }
-
         /// Driver 1 ///
         double TURN_MOD = 0.85;
         double speed_mod = 1;
@@ -230,7 +227,21 @@ public class LiveTeleop extends LiveTeleopBase {
         double x = gamepad1.left_stick_x;
         double y = gamepad1.left_stick_y;
         double a = gamepad1.right_stick_x;
-        if (gamepad1.x) {
+        robot.drive_train.mecanum_drive(
+                x * speed_mod,
+                y * speed_mod,
+                a * speed_mod * TURN_MOD
+        );
+
+        // Sweeper
+        if (gamepad1.a && !a1_pressed) {
+            robot.intake.sweeper_kick();
+        } else {
+            robot.intake.sweeper_rest();
+            a1_pressed = false;
+        }
+
+        /*if (gamepad1.x) {
             if (!x1_pressed) {
                 drive_a = (double) robot.drive_train.lcs.a;
                 a1_pressed = true;
@@ -252,7 +263,7 @@ public class LiveTeleop extends LiveTeleopBase {
                     y * speed_mod,
                     a * speed_mod * TURN_MOD
             );
-        }
+        }*/
     }
 
     @Override

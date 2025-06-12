@@ -54,6 +54,8 @@ public class DriveTrain extends Component {
     // The cached last read IMU orientation
     private Orientation last_imu_orientation = new Orientation();
 
+    private double imu_offset = 0; // Used to reset LCS angle correctly, doesn't work without
+
     // The odometry math system used for calculating position from encoder count updates from the odometers
     public LocalCoordinateSystem lcs = new LocalCoordinateSystem();
 
@@ -70,6 +72,7 @@ public class DriveTrain extends Component {
 
     private double speed;
     public boolean moving = false;
+    public boolean auto = false;
 
     // The current coyote path the drive train is running
     public Path current_path;
@@ -119,6 +122,10 @@ public class DriveTrain extends Component {
 
             if (distance < 1 && drive_angle < 0.02) {
                 moving = false;
+
+                /*if (auto) {
+                    read_from_imu();
+                }*/
             } else {
                 mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
             }
@@ -145,7 +152,7 @@ public class DriveTrain extends Component {
 
         // Periodically read from the IMU in order to realign the angle to counteract drift
         // IMU angle is generally more accurate than odometry angle near the end of the match
-        if (robot.cycle % DriveTrainConfig.GYRO_READ_INTERVAL == 0) {
+        if (robot.cycle % DriveTrainConfig.GYRO_READ_INTERVAL == 0 /* && !auto*/) {
             read_from_imu();
         }
     }
@@ -168,7 +175,7 @@ public class DriveTrain extends Component {
 
         telemetry.addData("PID", drive_lf.motor.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
 
-        telemetry.addData("IMU", last_imu_orientation.firstAngle+" "+last_imu_orientation.secondAngle+" "+last_imu_orientation.thirdAngle);
+        telemetry.addData("IMU", last_imu_orientation.firstAngle /*+" "+last_imu_orientation.secondAngle+" "+last_imu_orientation.thirdAngle*/);
 
         if (current_path != null) {
             Pose cfp = current_path.getFollowPose();
@@ -218,7 +225,7 @@ public class DriveTrain extends Component {
      */
     public void read_from_imu() {
         last_imu_orientation = imu.getRobotOrientation(AxesReference.EXTRINSIC, AxesOrder.ZXY, AngleUnit.RADIANS);
-        lcs.a = last_imu_orientation.firstAngle;
+        lcs.a = last_imu_orientation.firstAngle + imu_offset;
     }
 
     /**
@@ -297,6 +304,8 @@ public class DriveTrain extends Component {
         this.lcs.x = x;
         this.lcs.y = y;
         this.lcs.a = a;
+        this.imu.resetYaw();
+        this.imu_offset = a;
     }
 
     /**
@@ -304,9 +313,7 @@ public class DriveTrain extends Component {
      * @param pose new pose
      */
     public void odo_reset(@NonNull Pose pose) {
-        this.lcs.x = pose.x;
-        this.lcs.y = pose.y;
-        this.lcs.a = pose.a;
+        odo_reset(pose.x, pose.y, pose.a);
     }
 
     /**
@@ -318,7 +325,7 @@ public class DriveTrain extends Component {
     private void target(double x, double y, double a) {
         target_x = x;
         target_y = y;
-        target_a = a;
+        target_a = -a;
     }
 
     /**

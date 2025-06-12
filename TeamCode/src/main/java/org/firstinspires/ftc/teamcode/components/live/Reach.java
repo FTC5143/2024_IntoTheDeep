@@ -27,6 +27,8 @@ class ReachConfig {
     public static final int SECT_LENGTH     = 112;  // length of section-arms in mm (from end to end)\
 
     public static final int SERVO_RANGE     = 355; // deg
+
+    public static final int MAX_LINEAR_SPEED = 30; // mm
 }
 
 public class Reach extends Component {
@@ -134,6 +136,10 @@ public class Reach extends Component {
         reach_r_angle = reach_angle(reach_r_target);
         reach_l.queue_position((Math.toDegrees(reach_l_angle)) / ReachConfig.SERVO_RANGE);
         reach_r.queue_position((Math.toDegrees(reach_r_angle)) / ReachConfig.SERVO_RANGE);
+    }
+
+    public void linear(double speed) {
+        extend_to(reach_l_target + (int) (speed * ReachConfig.MAX_LINEAR_SPEED));
     }
 
     public void min_reach() {

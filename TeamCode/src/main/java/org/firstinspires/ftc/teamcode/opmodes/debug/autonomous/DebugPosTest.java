@@ -15,27 +15,29 @@ public class DebugPosTest extends LinearOpMode {
         robot = new DebugRobot(this);
         robot.startup();
 
-        //robot.drive_train.odo_reset(AutoConst.leftInitPose);
+        robot.drive_train.odo_reset(0,0,Math.PI * -1/2);
 
         waitForStart();
 
-        robot.drive_train.odo_drive(0,0,Math.PI * 0, 0.5);
+        // robot.drive_train.odo_drive(0,0,Math.PI * 0, 0.5);
 
-        halt(5);
+        // halt(5);
 
         robot.drive_train.odo_drive(0,0,Math.PI * 1/2, 0.5);
 
-        halt(5);
+        halt(2);
 
-        robot.drive_train.odo_drive(0,0,Math.PI * 1, 0.5);
+        robot.drive_train.odo_drive(0,0,Math.PI, 0.5);
 
-        halt(5);
-
-        robot.drive_train.odo_drive(0,0,Math.PI * 3/2, 0.5);
-
-        halt(5);
+        halt(2);
 
         robot.drive_train.odo_drive(0,0,Math.PI * 3/2, 0.5);
+
+        halt(2);
+
+        robot.drive_train.odo_drive(0,0,0, 0.5);
+
+        halt(2);
 
         robot.shutdown();
     }

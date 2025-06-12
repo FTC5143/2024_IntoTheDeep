@@ -4,20 +4,20 @@ import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 
 public class AutoConst {
 
-    public static double gridMod = Math.PI * 2/2;
+    public static double gridMod = Math.PI * 1/2;
 
     //// Pose list ////
     public static Pose leftInitPose         = new Pose(32.5, 8.5, 0 + gridMod);
     public static Pose rightInitPose        = new Pose(85,  8.5, Math.PI * 1/2 + gridMod);
 
-    public static Pose subPark              = new Pose(50,   58,  Math.PI + gridMod);
+    public static Pose subPark              = new Pose(50,   60,  Math.PI + gridMod);
     public static Pose humanParkLeft            = new Pose(110,  10,  Math.PI * 1/2 + gridMod);
     public static Pose humanParkRight            = new Pose(132,  10,  Math.PI * 1/2 + gridMod);
 
 
     //// Sample Poses ////
-    public static Pose highBasketPose       = new Pose(13,   13,  Math.PI * 1/4 + gridMod);
-    public static Pose highBasketPoseOffset = new Pose(18,   18,  Math.PI * 1/4 + gridMod);
+    public static Pose highBasketPose       = new Pose(14,   14,  Math.PI * 1/4 + gridMod);
+    public static Pose highBasketPoseOffset = new Pose(20,   20,  Math.PI * 1/4 + gridMod);
 
     public static Pose lowBasketPose        = new Pose(15,   15,  Math.PI * 1/4 + gridMod);
 

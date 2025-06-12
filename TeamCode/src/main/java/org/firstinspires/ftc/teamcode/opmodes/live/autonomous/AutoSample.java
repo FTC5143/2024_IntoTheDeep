@@ -20,6 +20,8 @@ public class AutoSample {
         this.fast = fast;
         this.slow = slow;
         sampleCount = 0;
+
+        robot.drive_train.auto = true;
     }
 
     public void sampleInit() {
@@ -214,6 +216,7 @@ public class AutoSample {
 
         robot.drive_train.odo_drive(AutoConst.subPark, 0.3);
 
+        robot.lift.elevate_to(LiftConst.SPECIMEN);
         robot.arm.park_position();
         robot.arm.close_claw();
 

@@ -264,6 +264,7 @@ public class Lift extends Component {
      */
     public void linear(double speed) {
         set_target_position(lift_f.getCurrentPosition() + (int) (LiftConfig.LINEAR_MAX_SPEED * speed));
+        starting_move = true;
     }
 
     /**
