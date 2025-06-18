@@ -39,7 +39,7 @@ public class Reach extends Component {
     //// SENSORS ////
     public DigitalChannel limit_switchR;
 
-    public int position;
+    public int reach_target;
     private int reach_l_target = MIN_LENGTH;
     private int reach_r_target = MIN_LENGTH;
     private double reach_l_angle = reach_angle(MIN_LENGTH);
@@ -127,10 +127,10 @@ public class Reach extends Component {
     }
 
     public void extend_to(int target) {
-        position = Range.clip(target, MIN_LENGTH, MAX_LENGTH);
+        reach_target = Range.clip(target, MIN_LENGTH, MAX_LENGTH);
 
-        reach_l_target = position;
-        reach_r_target = position;
+        reach_l_target = reach_target;
+        reach_r_target = reach_target;
 
         reach_l_angle = reach_angle(reach_l_target);
         reach_r_angle = reach_angle(reach_r_target);

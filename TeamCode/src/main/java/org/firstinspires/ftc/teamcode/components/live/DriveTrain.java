@@ -122,6 +122,7 @@ public class DriveTrain extends Component {
 
             if (distance < 1 && drive_angle < 0.02) {
                 moving = false;
+                stop();
 
                 /*if (auto) {
                     read_from_imu();
@@ -133,13 +134,10 @@ public class DriveTrain extends Component {
 
         // Finding new motors powers from the drive variables
         double[] motor_powers = mecanum_math(drive_x, drive_y, drive_a);
+        set_power(motor_powers);
+
         // Set one motor power per cycle. We do this to maintain a good odometry update speed
         // We should be doing a full drive train update at about 40hz with this configuration, which is more than enough
-        drive_lf.queue_power(motor_powers[0]);
-        drive_rf.queue_power(motor_powers[1]);
-        drive_lb.queue_power(motor_powers[2]);
-        drive_rb.queue_power(motor_powers[3]);
-
         if (robot.cycle % 4 == 0) {
             drive_lf.update();
         } else if (robot.cycle % 4 == 1) {
@@ -250,6 +248,43 @@ public class DriveTrain extends Component {
         drive_rb.motor.setZeroPowerBehavior(mode);
     }
 
+    /**
+     * Set all drive motors to respective drive variables
+     */
+    private void set_power(double[] motor_powers) {
+        set_power(motor_powers[0], motor_powers[1], motor_powers[2], motor_powers[3]);
+    }
+
+    /**
+     * Set all drive motors to respective drive variables
+     * @param lf drive_lf
+     * @param rf drive_rf
+     * @param lb drive_lb
+     * @param rb drive_rb
+     */
+    private void set_power(double lf, double rf, double lb, double rb) {
+        drive_lf.queue_power(lf);
+        drive_rf.queue_power(rf);
+        drive_lb.queue_power(lb);
+        drive_rb.queue_power(rb);
+    }
+
+    /**
+     * Stop all motors and reset all drive variables
+     */
+    public void stop() {
+        moving = false;
+
+        mecanum_drive(0, 0, 0);
+
+        setZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+        set_power(0, 0, 0, 0);
+
+        drive_lf.update();
+        drive_rf.update();
+        drive_lb.update();
+        drive_rb.update();
+    }
 
     // Drive Train TeleOp Methods //
 
@@ -327,22 +362,6 @@ public class DriveTrain extends Component {
         target_y = y;
         target_a = -a;
     }
-
-    /**
-     * Stop all motors and reset all drive variables
-     */
-    public void stop() {
-        mecanum_drive(0, 0, 0);
-
-        setZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
-        drive_lf.motor.setPower(0);
-        drive_rf.motor.setPower(0);
-        drive_lb.motor.setPower(0);
-        drive_rb.motor.setPower(0);
-
-        moving = false;
-    }
-
 
     // Movement Methods //
 

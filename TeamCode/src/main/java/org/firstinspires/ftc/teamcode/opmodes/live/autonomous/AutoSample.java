@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes.live.autonomous;
 
 import org.firstinspires.ftc.teamcode.constants.AutoConst;
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
-import org.firstinspires.ftc.teamcode.constants.LEDConst;
 import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.robots.LiveRobot;
@@ -30,8 +29,6 @@ public class AutoSample {
         robot.intake.auto_run = false;
         robot.arm.transfer_position();
         robot.arm.close_claw();
-
-        robot.led_control.alliance = LEDConst.DEFAULT;
     }
 
     public void sampleStop() {
@@ -54,6 +51,7 @@ public class AutoSample {
             halt(1);
 
             boolean haveSample = (robot.intake.current_color != IntakeConst.SAMPLE_NONE);
+            robot.intake.auto_run = false;
 
             robot.arm.transfer_position(); // grab sample and raise lift to high basket
 
@@ -77,8 +75,6 @@ public class AutoSample {
                     sampleCount++;
                 }
             }
-
-            robot.intake.auto_run = false;
 
             halt(1);
 
@@ -177,6 +173,7 @@ public class AutoSample {
         while (robot.intake.current_color == IntakeConst.SAMPLE_NONE && (robot.opmode.getRuntime() - start_time) < 2.0 && robot.opmode.opModeIsActive()) {
             if (robot.cycle % 20 == 0) {
                 robot.drive_train.odo_wiggle(wiggle ? 0.2 : -0.2);
+                robot.reach.extend_to(robot.reach.reach_target + 20);
                 wiggle = !wiggle;
             }
         }
@@ -214,7 +211,7 @@ public class AutoSample {
 
         halt(1.5);
 
-        robot.drive_train.odo_drive(AutoConst.subPark, 0.3);
+        robot.drive_train.odo_drive(AutoConst.subPark, fast / 2);
 
         robot.lift.elevate_to(LiftConst.SPECIMEN);
         robot.arm.park_position();

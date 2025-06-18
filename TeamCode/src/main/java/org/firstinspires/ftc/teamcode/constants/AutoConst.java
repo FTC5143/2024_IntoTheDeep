@@ -16,7 +16,7 @@ public class AutoConst {
 
 
     //// Sample Poses ////
-    public static Pose highBasketPose       = new Pose(14,   14,  Math.PI * 1/4 + gridMod);
+    public static Pose highBasketPose       = new Pose(13,   13,  Math.PI * 1/4 + gridMod);
     public static Pose highBasketPoseOffset = new Pose(20,   20,  Math.PI * 1/4 + gridMod);
 
     public static Pose lowBasketPose        = new Pose(15,   15,  Math.PI * 1/4 + gridMod);
